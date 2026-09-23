@@ -1,5 +1,6 @@
-input = None
-input = int(input("Enter an integer: "))
+
+def take_input(value):
+    value = int(input("Enter an integer: "))
 
 
 def unsigned_int():

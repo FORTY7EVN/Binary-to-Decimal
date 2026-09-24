@@ -1,122 +1,94 @@
 
-def take_input(value):
-    value = int(input("Enter an integer: "))
+def take_input():
+    value = input("Enter a binary integer: ").strip()
+    if not value or any(bit not in "01" for bit in value):
+        raise ValueError("Enter a binary number containing only 0 and 1.")
+    return [int(bit) for bit in value]
 
 
-def unsigned_int():
-    # output = convert_by_weights()
-    # print(output)
-
-    pass
-
-
-def signed_int():
-    # extract msb
-    # remove msb bit from og list
-    # convert remaining n-1 bits by weight
-    # add sign
-    pass
+def convert(arr):
+    result = 0
+    power = 0
+    for index in range(len(arr) - 1, -1, -1):
+        result = result + ((2**power) * arr[index])
+        power += 1
+    return result
 
 
-def unsigned_1s():
-    # invert
-    # convert bits by weight
-    pass
+def invert(arr):
+    return [1 - bit for bit in arr]
 
 
-def signed_1s():
-    # extract msb
-    # invert n bits
-    # add sign
-    # conversion by weights
-    # add sign
-    pass
+def add_1(arr):
+    for index in range(len(arr) - 1, -1, -1):
+        if arr[index] == 0:
+            arr[index] = 1
+            break
+        arr[index] = 0
+    return arr
 
 
-def unsigned_2s():
-    # invert
-    # add 1
-    # conversion by weight
-    pass
+def unsigned_int(arr):
+    return convert(arr)
 
 
-def signed_2s():
-    # extract msb
-    # invert n bits
-    # add 1
-    # convert n bits
-    # add sign
-    # convert by weights
-    pass
+def signed_int(arr):
+    if arr[0] == 1:
+        return -convert(arr[1:])
+    else:
+        return convert(arr[1:])
 
 
-def magnitude():
-    # extract msb
-    # convert n-1 bits
-    # add sign
-    # conversion by weights
-    pass
+def unsigned_1s(arr):
+    return convert(invert(arr))
 
 
-def to_excess_7_binary():
-    # input: excess-7 decimal
-    # add 7
-    # conversion to binary
-    # invert n bits
-    # add 1
-    pass
+def signed_1s(arr):
+    sign = arr[0]
+    if sign == 1:
+        return -convert(invert(arr[1:]))
+    else:
+        return convert(arr[1:])
 
 
-def excess_7_decimal():
-    # input: excess-7 binary
-    # conversion by weights
-    # minus 7
-    pass
+def unsigned_2s(arr):
+    return convert(add_1(invert(arr)))
 
 
-def convert_by_weights():
-    # output var
-    # reverse the list
-    # for every element of the list from 0 to end : ( (2 ^ n) * bit_value ),  where bit_value is the value of that bit on its given index, and n is the index of that element in the list
-    # increment every output of element to output var
-    pass
+def signed_2s(arr):
+    if arr[0] == 1:
+        return -convert(add_1(invert(arr[1:])))
+    else:
+        return convert(arr[1:])
 
 
-def invert():
-    # fetch every element from the list by for loop , arguement: num in reversed(numbers): , where reversed is actually a method of accessing a list elements in reverse order, built in
-    # append every element to a new list
-
-    # starting_range = length of list - 1
-    # ending_range = -1 : ending range is -1 because loop ends 1 entry before the given number ... just like <
-    # decrement of -1 for every iteration of the loop
-    # element is the element of list at given index
-    # append element to the new list
-
-    # while the og list:
-    #   reversed_arr . append () = og_arr . pop ()
-
-    # def reverse_with_loop(arr):
-    # reversed_arr = []
-    # Count down from len(arr) - 1 down to 0
-    # for i in range(len(arr) - 1, -1, -1):
-    #    reversed_arr.append(arr[i])
-    # return reversed_arr
-    pass
+def magnitude(arr):
+    return convert(arr[1:])
 
 
-def add_1():
-    # get reversed list
-    # start from 0 (virtually end element of og list)
-    # if the given element is 1, output of that will be 0,
-    # and move to next element, if element is 0, output of that element is 1
-    # ... skip other elements ...
-    # add other elements of the og list as it is
-    pass
+def to_excess_7_binary(value):
+    return [int(bit) for bit in format(value + 7, "b")]
 
 
-def extract_msb():
-    # og list, the element at index 0,
-    # get that element,
-    # if element if 1, sign = minus
-    # else sign = plus
-    pass
+def excess_7_decimal(arr):
+    return convert(arr) - 7
+
+
+def test():
+    arr = take_input()
+    conversions = {
+        "unsigned integer": unsigned_int(arr),
+        "signed integer": signed_int(arr),
+        "unsigned 1's complement": unsigned_1s(arr),
+        "signed 1's complement": signed_1s(arr),
+        "unsigned 2's complement": unsigned_2s(arr),
+        "signed 2's complement": signed_2s(arr),
+        "magnitude": magnitude(arr),
+        "excess-7 decimal": excess_7_decimal(arr),
+    }
+
+    for name, value in conversions.items():
+        print(f"{name}: {value}")
+
+
+test()
